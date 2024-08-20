@@ -8,5 +8,5 @@ import com.github.b4s1ccoder.progressibility.entity.User;
 
 public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findById(String id);
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,44 +52,49 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
 
-        User user = userService.findByEmail(id);
+        Optional<User> user = userService.findByEmail(id);
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
-        // if (user.isPresent()) {
-        //     return new ResponseEntity<>(user.get(), HttpStatus.OK);
-        // }
+        if (user.isPresent()) {
+            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        }
 
-        // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
         try {
 
-            // authenticationManager.authenticate(
-            //     new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
-            // );
+            log.info(user.getEmail());
+            log.info(user.getPassword());
+
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+            );
 
             // UserDetails userDetails = userDetailServiceImpl.loadUserByUsername(user.getEmail());
-            User temp = userService.findByEmail(user.getEmail());
-            String token = jwtUtils.generateToken(temp.getId());
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            Optional<User> temp = userService.findByEmail(user.getEmail());
 
-            // if (temp.isPresent()) {
-            //     User userEntity = temp.get();
+            if (temp.isPresent()) {
+                User userEntity = temp.get();
 
-            //     // if (!userEntity.getPassword().equals(userService.passwordEncode(user.getPassword()))) {
-            //     //     return new ResponseEntity<>("Invalid password.", HttpStatus.BAD_REQUEST);
-            //     // }
+                // if (!userEntity.getPassword().equals(userService.passwordEncode(user.getPassword()))) {
+                //     return new ResponseEntity<>("Invalid password.", HttpStatus.BAD_REQUEST);
+                // }
 
-            //     String token = jwtUtils.generateToken(userEntity.getId());
-            //     return new ResponseEntity<>(token, HttpStatus.OK);
-            // }
+                String token = jwtUtils.generateToken(userEntity.getId());
+                return new ResponseEntity<>(token, HttpStatus.OK);
+            }
 
-            // return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            log.error("Error while login: ", e);
             return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
+        } catch (AuthenticationException ae) {
+            log.error("Authentication Error: ", ae.getMessage());
+            return new ResponseEntity<>("Invalid credentials. Auth error.", HttpStatus.BAD_REQUEST);
+        } 
+        
+        catch (Exception e) {
+            log.error("Error while login: ", e);
+            return new ResponseEntity<>("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
