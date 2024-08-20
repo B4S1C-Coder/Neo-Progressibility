@@ -51,13 +51,14 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
 
-        Optional<User> user = userService.findById(id);
+        User user = userService.findByEmail(id);
 
-        if (user.isPresent()) {
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
-        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
+        // if (user.isPresent()) {
+        //     return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        // }
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/login")

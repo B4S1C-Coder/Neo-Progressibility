@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.github.b4s1ccoder.progressibility.filter.ApiKeyFilter;
+import com.github.b4s1ccoder.progressibility.filter.JwtFilter;
 import com.github.b4s1ccoder.progressibility.service.UserDetailServiceImpl;
 
 @Configuration
@@ -27,6 +28,9 @@ public class SpringSecurity {
 
     @Autowired
     private UserDetailServiceImpl userDetailServiceImpl;
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Autowired
     @Qualifier("myPasswordEncoder")
@@ -41,7 +45,8 @@ public class SpringSecurity {
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf(AbstractHttpConfigurer::disable)
-            .addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
