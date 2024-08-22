@@ -21,12 +21,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        log.info("Trying to find user by id: " + id);
-        Optional<User> user = userRepository.findById(id);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        log.info("Trying to find user by email: " + email);
+        Optional<User> user = userRepository.findByEmail(email);
 
         if (user.isPresent()) {
-            log.info("User found with id: " + id);
+            log.info("User found with email: " + email);
+            
             User userZ = user.get();
             UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
                     .username(userZ.getEmail())
@@ -38,6 +39,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
             return userDetails;
         }
 
-        throw new UsernameNotFoundException("No user associated with id: "+ id);
+        throw new UsernameNotFoundException("No user associated with email: "+ email);
     }
 }

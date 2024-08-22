@@ -33,20 +33,23 @@ public class JwtFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String authHeader = req.getHeader("Authorization");
-        String id = null;
+        String email = null;
         String token = null;
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            id = jwtUtils.extractId(token);
+            email = jwtUtils.extractId(token);
         }
 
-        if (id != null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(id);
+        if (email != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
             if (jwtUtils.isTokenValid(token)) {
+
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
+                    userDetails, null, userDetails.getAuthorities()
+                );
+
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }

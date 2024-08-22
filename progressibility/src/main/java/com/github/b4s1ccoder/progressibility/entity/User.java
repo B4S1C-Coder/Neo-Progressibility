@@ -8,13 +8,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+// import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
 @Document(collection = "users")
 @Data
-@AllArgsConstructor
+// @AllArgsConstructor
 public class User {
     @Id
     private String id;
@@ -27,6 +29,7 @@ public class User {
     private String email;
 
     @NonNull
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private List<String> roles = new ArrayList<>(Arrays.asList("USER"));

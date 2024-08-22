@@ -82,7 +82,7 @@ public class UserController {
                 //     return new ResponseEntity<>("Invalid password.", HttpStatus.BAD_REQUEST);
                 // }
 
-                String token = jwtUtils.generateToken(userEntity.getId());
+                String token = jwtUtils.generateToken(userEntity.getEmail());
                 return new ResponseEntity<>(token, HttpStatus.OK);
             }
 
