@@ -3,7 +3,7 @@ package com.github.b4s1ccoder.progressibility.filter;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+// import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,6 +11,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.github.b4s1ccoder.progressibility.security.UserEntityIncludedAuthToken;
+import com.github.b4s1ccoder.progressibility.security.UserEntityIncludedUserDetails;
 import com.github.b4s1ccoder.progressibility.utils.JWTUtils;
 
 import jakarta.servlet.FilterChain;
@@ -41,18 +43,28 @@ public class JwtFilter extends OncePerRequestFilter {
             email = jwtUtils.extractId(token);
         }
 
-        if (email != null) {
+        if (email != null && jwtUtils.isTokenValid(token)) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            if (jwtUtils.isTokenValid(token)) {
-
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities()
+            if (userDetails instanceof UserEntityIncludedUserDetails userEntityIncludedUserDetails) {
+                
+                UserEntityIncludedAuthToken auth = new UserEntityIncludedAuthToken(
+                    userEntityIncludedUserDetails.getUser(), null, userDetails.getAuthorities()
                 );
 
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
+
+            // if (jwtUtils.isTokenValid(token)) {
+
+            //     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+            //         userDetails, null, userDetails.getAuthorities()
+            //     );
+
+            //     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+            //     SecurityContextHolder.getContext().setAuthentication(auth);
+            // }
         }
 
         chain.doFilter(req, res);

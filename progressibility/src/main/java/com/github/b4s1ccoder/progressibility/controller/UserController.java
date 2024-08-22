@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.b4s1ccoder.progressibility.entity.User;
-import com.github.b4s1ccoder.progressibility.service.UserDetailServiceImpl;
+import com.github.b4s1ccoder.progressibility.security.UserEntityIncludedAuthToken;
 import com.github.b4s1ccoder.progressibility.service.UserService;
 import com.github.b4s1ccoder.progressibility.utils.JWTUtils;
 
@@ -36,9 +35,6 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserDetailServiceImpl userDetailServiceImpl;
-
-    @Autowired
     private JWTUtils jwtUtils;
 
     @PostMapping("/create")
@@ -50,15 +46,23 @@ public class UserController {
     @GetMapping("/detail")
     public ResponseEntity<?> getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = authentication.getName();
+        // String id = authentication.getName();
+        // User user = authentication.getUser();
 
-        Optional<User> user = userService.findByEmail(id);
-
-        if (user.isPresent()) {
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        if (authentication instanceof UserEntityIncludedAuthToken) {
+            UserEntityIncludedAuthToken userEntityIncludedAuthToken = (UserEntityIncludedAuthToken) authentication;
+            return new ResponseEntity<>(userEntityIncludedAuthToken.getUser(), HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // Optional<User> user = userService.findByEmail(id);
+
+        // if (user.isPresent()) {
+        //     return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        // }
+
+        // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>("User not authenticated", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/login")
@@ -72,16 +76,10 @@ public class UserController {
                 new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
             );
 
-            // UserDetails userDetails = userDetailServiceImpl.loadUserByUsername(user.getEmail());
             Optional<User> temp = userService.findByEmail(user.getEmail());
 
             if (temp.isPresent()) {
                 User userEntity = temp.get();
-
-                // if (!userEntity.getPassword().equals(userService.passwordEncode(user.getPassword()))) {
-                //     return new ResponseEntity<>("Invalid password.", HttpStatus.BAD_REQUEST);
-                // }
-
                 String token = jwtUtils.generateToken(userEntity.getEmail());
                 return new ResponseEntity<>(token, HttpStatus.OK);
             }

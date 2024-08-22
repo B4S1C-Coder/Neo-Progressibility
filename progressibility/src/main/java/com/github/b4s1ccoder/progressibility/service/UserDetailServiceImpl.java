@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.b4s1ccoder.progressibility.entity.User;
 import com.github.b4s1ccoder.progressibility.repository.UserRepository;
+import com.github.b4s1ccoder.progressibility.security.UserEntityIncludedUserDetails;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,16 +28,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         if (user.isPresent()) {
             log.info("User found with email: " + email);
-            
-            User userZ = user.get();
-            UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                    .username(userZ.getEmail())
-                    .password(userZ.getPassword())
-                    .roles(userZ.getRoles().toArray(new String[0]))
-                    .build();
-            log.info(userDetails.toString());
+            return new UserEntityIncludedUserDetails(user.get());
+            // User userZ = user.get();
+            // UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+            //         .username(userZ.getEmail())
+            //         .password(userZ.getPassword())
+            //         .roles(userZ.getRoles().toArray(new String[0]))
+            //         .build();
+            // log.info(userDetails.toString());
 
-            return userDetails;
+            // return userDetails;
         }
 
         throw new UsernameNotFoundException("No user associated with email: "+ email);
