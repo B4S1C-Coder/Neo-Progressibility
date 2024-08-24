@@ -52,7 +52,7 @@ public class UserController {
             return new ResponseEntity<>(userEntityIncludedAuthToken.getUser(), HttpStatus.OK);
         }
 
-        return new ResponseEntity<>("User not authenticated", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("User not authenticated", HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/login")
