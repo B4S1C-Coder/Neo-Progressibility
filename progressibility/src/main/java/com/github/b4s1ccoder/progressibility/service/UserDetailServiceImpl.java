@@ -29,15 +29,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
         if (user.isPresent()) {
             log.info("User found with email: " + email);
             return new UserEntityIncludedUserDetails(user.get());
-            // User userZ = user.get();
-            // UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-            //         .username(userZ.getEmail())
-            //         .password(userZ.getPassword())
-            //         .roles(userZ.getRoles().toArray(new String[0]))
-            //         .build();
-            // log.info(userDetails.toString());
-
-            // return userDetails;
         }
 
         throw new UsernameNotFoundException("No user associated with email: "+ email);

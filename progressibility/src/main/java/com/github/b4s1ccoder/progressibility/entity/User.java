@@ -6,17 +6,16 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
 @Document(collection = "users")
 @Data
-// @AllArgsConstructor
 public class User {
     @Id
     private String id;
@@ -33,4 +32,7 @@ public class User {
     private String password;
 
     private List<String> roles = new ArrayList<>(Arrays.asList("USER"));
+
+    @DBRef
+    private List<Task> tasks = new ArrayList<>();
 }

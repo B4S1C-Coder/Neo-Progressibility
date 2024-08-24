@@ -46,21 +46,11 @@ public class UserController {
     @GetMapping("/detail")
     public ResponseEntity<?> getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // String id = authentication.getName();
-        // User user = authentication.getUser();
 
         if (authentication instanceof UserEntityIncludedAuthToken) {
             UserEntityIncludedAuthToken userEntityIncludedAuthToken = (UserEntityIncludedAuthToken) authentication;
             return new ResponseEntity<>(userEntityIncludedAuthToken.getUser(), HttpStatus.OK);
         }
-
-        // Optional<User> user = userService.findByEmail(id);
-
-        // if (user.isPresent()) {
-        //     return new ResponseEntity<>(user.get(), HttpStatus.OK);
-        // }
-
-        // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>("User not authenticated", HttpStatus.BAD_REQUEST);
     }
