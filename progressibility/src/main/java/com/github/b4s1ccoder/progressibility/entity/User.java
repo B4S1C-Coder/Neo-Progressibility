@@ -35,4 +35,7 @@ public class User {
 
     @DBRef
     private List<Task> tasks = new ArrayList<>();
+
+    @DBRef
+    private List<Tag> tags = new ArrayList<>();
 }
