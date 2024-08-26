@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
@@ -24,5 +25,6 @@ public class Tag {
     private User user;
 
     @DBRef
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Task> tasks = new ArrayList<>();
 }

@@ -6,8 +6,10 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.b4s1ccoder.progressibility.entity.Tag;
 import com.github.b4s1ccoder.progressibility.entity.Task;
 import com.github.b4s1ccoder.progressibility.entity.User;
+import com.github.b4s1ccoder.progressibility.repository.TagRepository;
 import com.github.b4s1ccoder.progressibility.repository.TaskRepository;
 
 @Service
@@ -18,6 +20,9 @@ public class TaskService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     public boolean taskIdBelongsToUser(String taskId, User user) {
         return user.getTasks().stream().anyMatch(
@@ -84,6 +89,12 @@ public class TaskService {
 
         user.getTasks().removeIf(usertask -> usertask.getId().equals(taskId));
         userService.save(user);
+
+        // Check if task is associated with tags and remove if so
+        for (Tag tag: user.getTags()) {
+            tag.getTasks().removeIf(taskOfTag -> taskOfTag.getId().equals(taskId));
+            tagRepository.save(tag);
+        }
 
         taskRepository.deleteById(taskId);
         return 0;

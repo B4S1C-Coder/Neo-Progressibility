@@ -12,10 +12,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @Document(collection = "users")
 @Data
+@NoArgsConstructor
 public class User {
     @Id
     private String id;
