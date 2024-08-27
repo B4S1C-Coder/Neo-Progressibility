@@ -40,4 +40,7 @@ public class User {
 
     @DBRef
     private List<Tag> tags = new ArrayList<>();
+
+    @DBRef
+    private List<Team> teams = new ArrayList<>();
 }
