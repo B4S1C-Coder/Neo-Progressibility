@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.b4s1ccoder.progressibility.entity.Tag;
 import com.github.b4s1ccoder.progressibility.entity.Task;
@@ -38,6 +39,7 @@ public class TagService {
         return tagRepository.findById(id);
     }
 
+    @Transactional
     public Tag save(Tag tag, User user) {
         if ((tag.getId() != null) && (tagIdBelongsToUser(tag.getId(), user))) {
 
@@ -58,6 +60,7 @@ public class TagService {
         }
     }
 
+    @Transactional
     public Tag addTaskToTagAndSave(Tag tag, Task task, User user) {
 
         if ((tag.getId() == null)||(!tagIdBelongsToUser(tag.getId(), user))) {
@@ -87,6 +90,7 @@ public class TagService {
         }
     }
 
+    @Transactional
     public Tag removeTaskFromTagAndSave(Tag tag, Task task, User user) {
         if ((tag.getId() == null) || (!tagIdBelongsToUser(tag.getId(), user))) {
             // Silently fail, as if tag id is null, or tag doesn't belong to user,
@@ -104,6 +108,7 @@ public class TagService {
         return save(tag, user);
     }
 
+    @Transactional
     public int deleteTag(String tagId, User user) {
         if (!tagIdBelongsToUser(tagId, user)) {
             return -1;

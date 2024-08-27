@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.b4s1ccoder.progressibility.entity.Tag;
 import com.github.b4s1ccoder.progressibility.entity.Task;
@@ -34,6 +35,7 @@ public class TaskService {
         return taskRepository.findById(id);
     }
 
+    @Transactional
     public Task save(Task task, User user) {
         if ((task.getId() != null)&&(taskIdBelongsToUser(task.getId(), user))) {
             task.setUser(user);
@@ -53,6 +55,7 @@ public class TaskService {
 
     // This function does NOT employ extra checks and is meant to be used only
     // after all the neccessary checks are performed BEFORE calling this function.
+    @Transactional
     public Task update(Task oldTask, Task task, User user) {
         oldTask.setContent(
             (task.getContent() != null && !task.getContent().equals(""))
@@ -74,6 +77,7 @@ public class TaskService {
         return save(oldTask, user);
     }
 
+    @Transactional
     public int deleteTask(String taskId, User user) {
 
         // The task id does not exist in the user, so it likely means that this is
