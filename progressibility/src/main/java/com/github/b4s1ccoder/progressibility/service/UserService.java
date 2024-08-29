@@ -37,6 +37,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void veryDangerous_simpleDelete(String userId) {
+        userRepository.deleteById(userId);
+    }
+
     public String passwordEncode(String payload) {
         return passwordEncoder.encode(payload);
     }
