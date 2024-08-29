@@ -57,7 +57,8 @@ public class TeamService {
                 .concat("@".concat(owner.getId()));
 
         User teamUserObj = new User(teamUserObjIdentifier, teamUserObjIdentifier);
-        team.setTeamUserObj(teamUserObj);
+        User savedTeamUserObj = userService.save(teamUserObj, false);
+        team.setTeamUserObj(savedTeamUserObj);
 
         Team savedTeam = teamRepository.save(team);
 
