@@ -46,6 +46,9 @@ public class User {
     @DBRef
     private List<Team> teams = new ArrayList<>();
 
+    @DBRef
+    private List<Team> teamInvitations = new ArrayList<>();
+
     public User(String email, String password) {
         this.email = email;
         this.password = password;

@@ -35,6 +35,9 @@ public class Team {
     private List<User> users = new ArrayList<>();
     @DBRef
     @JsonIgnore
+    private List<User> invitedUsers = new ArrayList<>();
+    @DBRef
+    @JsonIgnore
     private List<Task> tasks = new ArrayList<>();
     @DBRef
     @JsonIgnore

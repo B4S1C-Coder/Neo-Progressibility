@@ -19,6 +19,7 @@ import com.github.b4s1ccoder.progressibility.entity.Team;
 import com.github.b4s1ccoder.progressibility.entity.User;
 import com.github.b4s1ccoder.progressibility.security.SecurityUtils;
 import com.github.b4s1ccoder.progressibility.service.TeamService;
+import com.github.b4s1ccoder.progressibility.service.UserService;
 
 @RestController
 @RequestMapping("/team")
@@ -29,6 +30,9 @@ public class TeamController {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     private ResponseEntity<?> getAllTeamsOfUser() {
@@ -85,5 +89,35 @@ public class TeamController {
         Team savedTeam = teamService.createTeamUserObj(updatedTeam, owner);
 
         return new ResponseEntity<>(savedTeam.externalRepr(), HttpStatus.OK);
+    }
+
+    @PostMapping("/invite/{teamId}/{userEmail}")
+    private ResponseEntity<?> inviteUserToTeam(@PathVariable String teamId, @PathVariable String userEmail) {
+        Optional<User> userOpt = securityUtils.getAuthenticatedUser();
+
+        if (!userOpt.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Optional<Team> teamOpt = teamService.findById(teamId);
+
+        if (!teamOpt.isPresent()) {
+            return new ResponseEntity<>("Team not found", HttpStatus.NOT_FOUND);
+        }
+
+        Team team = teamOpt.get();
+
+        if (!team.getOwner().getId().equals(userOpt.get().getId())) {
+            return new ResponseEntity<>("Only Team owner can invite.", HttpStatus.FORBIDDEN);
+        }
+
+        Optional<User> invitedUserOpt = userService.findByEmail(userEmail);
+
+        if (!invitedUserOpt.isPresent()) {
+            return new ResponseEntity<>("Invited user not found", HttpStatus.NOT_FOUND);
+        }
+
+        Team updatedTeam = teamService.inviteUserToTeam(team, invitedUserOpt.get());
+        return new ResponseEntity<>(updatedTeam.externalRepr(), HttpStatus.OK);
     }
 }

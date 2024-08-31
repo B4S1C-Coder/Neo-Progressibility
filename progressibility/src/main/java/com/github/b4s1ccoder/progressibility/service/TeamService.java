@@ -47,6 +47,18 @@ public class TeamService {
         );
     }
 
+    public boolean userIdIsInvited(Team team, String userId) {
+        return team.getInvitedUsers().stream().anyMatch(
+            userOfTeam -> userOfTeam.getId().equals(userId)
+        );
+    }
+
+    public boolean teamInvitationIsInUserId(Team team, User user) {
+        return user.getTeamInvitations().stream().anyMatch(
+            teamInvitation -> teamInvitation.getId().equals(team.getId())
+        );
+    }
+
     public Optional<Team> findById(String id) {
         return teamRepository.findById(id);
     }
@@ -78,7 +90,27 @@ public class TeamService {
         Team savedTeam = teamRepository.save(team);
 
         user.getTeams().add(savedTeam);
+        user.getTeamInvitations().removeIf(
+            teamInvitation -> teamInvitation.getId().equals(savedTeam.getId())
+        );
         userService.save(user);
+
+        return savedTeam;
+    }
+
+    @Transactional
+    public Team inviteUserToTeam(Team team, User user) {
+        if (userIdIsInvited(team, user.getId())) {
+            return team;
+        }
+
+        team.getInvitedUsers().add(user);
+        Team savedTeam = teamRepository.save(team);
+
+        if (!teamInvitationIsInUserId(savedTeam, user)) {
+            user.getTeamInvitations().add(savedTeam);
+            userService.save(user, false);
+        }
 
         return savedTeam;
     }
