@@ -87,6 +87,7 @@ public class TeamService {
         }
 
         team.getUsers().add(user);
+        team.getInvitedUsers().removeIf(invitedUser -> invitedUser.getId().equals(user.getId()));
         Team savedTeam = teamRepository.save(team);
 
         user.getTeams().add(savedTeam);
