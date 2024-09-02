@@ -1,9 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ModeToggle } from "@/components/mode-toggle";
+import TagLine from "@/components/TagLine";
 
 export default function App() {
   return (
-    <div>
-      <Button>Click Me!</Button>
-    </div>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <ModeToggle/>
+      <div>
+        <TagLine />
+      </div>
+    </ThemeProvider>
   )
 }
