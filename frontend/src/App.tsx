@@ -1,13 +1,13 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
-import TagLine from "@/components/TagLine";
+import HomeHero from "@/components/HomeHero";
 
 export default function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <ModeToggle/>
       <div>
-        <TagLine />
+        <HomeHero />
       </div>
     </ThemeProvider>
   )
