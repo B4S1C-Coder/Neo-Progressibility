@@ -10,7 +10,7 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
 		boxShadowColor: {
-			'hot-pink-red': '#d02f54'
+			'hot-pink-red': '#dc2631'
 		},
   		colors: {
   			background: 'hsl(var(--background))',
