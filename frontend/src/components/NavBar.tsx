@@ -1,23 +1,18 @@
 import { useState } from "react";
 
+import { NavLink } from "react-router-dom";
+
 import {
     NavigationMenu,
-    // NavigationMenuContent,
-    // NavigationMenuIndicator,
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
-    // NavigationMenuTrigger,
     navigationMenuTriggerStyle,
-    // NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 
 import {
     Sheet,
     SheetContent,
-    // SheetDescription,
-    // SheetHeader,
-    // SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
 
@@ -26,8 +21,6 @@ import { Menu } from "lucide-react";
 
 import { ModeToggle } from "@/components/mode-toggle";
 
-import LoginForm from "./LoginForm";
-
 export default function NavBar() {
 
     const [isOpen, setIsOpen] = useState(false);
@@ -35,13 +28,19 @@ export default function NavBar() {
     const NavItems = () => (
         <>
             <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>Home</NavigationMenuLink>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <NavLink to="/">Home</NavLink>
+                </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>About</NavigationMenuLink>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <NavLink to="/about">About</NavLink>
+                </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}><LoginForm /></NavigationMenuLink>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <NavLink to="/signin">Sign In</NavLink>
+                </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
                 <ModeToggle />
@@ -67,7 +66,7 @@ export default function NavBar() {
                     <div className="md:hidden ml-x-6">
                         <Sheet open={isOpen} onOpenChange={setIsOpen}>
                             <SheetTrigger asChild>
-                                <Button variant="outline" size="icon">
+                                <Button variant="ghost" size="icon">
                                     <Menu className="h-6 w-6" />
                                 </Button>
                             </SheetTrigger>
