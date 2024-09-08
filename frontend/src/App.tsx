@@ -12,6 +12,8 @@ import ExternalSiteLayout from "@/layouts/ExternalSiteLayout";
 import HomePage from "@/pages/HomePage";
 import AboutPage from "@/pages/AboutPage";
 import SignInPage from "@/pages/SignInPage";
+import SignUpPage from "@/pages/SignUpPage";
+import DashboardPage from "./pages/DashboardPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,6 +24,8 @@ const router = createBrowserRouter(
         <Route path="/about" element={<AboutPage />} />
       </Route>
       <Route path="/signin" element={<SignInPage />}/>
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/app" element={<DashboardPage />} />
     </>
   )
 );
